@@ -12,7 +12,6 @@ defmodule RedditFetcher.MixProject do
     ]
   end
 
-
   def application do
     [
       extra_applications: [:logger]
@@ -24,6 +23,8 @@ defmodule RedditFetcher.MixProject do
   end
 
   defp deps do
-    []
+    [
+      httpoison: "~> 1.2.0"
+    ]
   end
 end
