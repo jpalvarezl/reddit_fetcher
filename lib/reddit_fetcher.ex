@@ -4,19 +4,29 @@ defmodule RedditFetcher.CLI do
     args
     |> parse_args
     |> response
-    |> IO.inspect
   end
 
   defp parse_args(args) do
-    {opts, word, _} =
-      args
-      |> OptionParser.parse(switches: [verbose: :boolean])
+  {opts, word, _} =
+    args
+    |> OptionParser.parse(switches: [verbose: :boolean])
 
     {opts, List.to_string(word)}
   end
 
   defp response({opts, word}) do
     if opts[:verbose], do: "VERBOSE MODE IS ON BITCH: #{word}", else: word
+    fetch_comments()
+  end
+
+  defp fetch_comments() do
+    {:ok, response} = HTTPoison.get("https://www.reddit.com/r/programming.json")
+    # File.write!("./response.html", response.body)
+    response.body
+    |> Poison.decode!
+    |> Map.get("data")
+    |> Map.get("children")
+    |> IO.inspect
   end
 
 end
