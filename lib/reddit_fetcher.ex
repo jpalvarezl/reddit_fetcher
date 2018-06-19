@@ -21,7 +21,7 @@ defmodule RedditFetcher.CLI do
 
   defp fetch_comments() do
     {:ok, response} = HTTPoison.get("https://www.reddit.com/r/programming.json")
-    # File.write!("./response.html", response.body)
+    # File.write!("./programming.json", response.body)
     response.body
     |> Poison.decode!
     |> Map.get("data")
