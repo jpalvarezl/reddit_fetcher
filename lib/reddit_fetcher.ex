@@ -32,7 +32,7 @@ defmodule RedditFetcher.CLI do
   end
 
   defp fetch_comments() do
-    {code, response} = HTTPoison.get("https://www.reddit.com/r/programming.json")
+    {code, response} = HTTPoison.get(@root_url<>"/r/programming.json")
 
     case code do
       :ok ->
