@@ -1,5 +1,7 @@
 defmodule RedditFetcher.CLI do
 
+  @root_url "https://www.reddit.com"
+
   def main(args \\ []) do
     args
     |> parse_args
@@ -14,30 +16,36 @@ defmodule RedditFetcher.CLI do
     {opts, List.to_string(word)}
   end
 
-  defp response({opts, word}) do
-    if opts[:verbose], do: "VERBOSE MODE IS ON: #{word}", else: word
-    fetch_comments()
+  defp response({opts, _}) do
+    formatted_comments =
+      case fetch_comments() do
+        {:ok, comments} ->
+          comments
+            |> Poison.decode!
+            |> Map.get("data")
+            |> Map.get("children")
+            |> Enum.map(&format_reddit(&1["data"]))
+        _ -> []
+      end
+
+    if opts[:verbose], do: IO.inspect(formatted_comments), else: nil
   end
 
   defp fetch_comments() do
-    # {:ok, response} = HTTPoison.get("https://www.reddit.com/r/programming.json")
-    # File.write!("./programming.json", response.body)
-    # response.body
-    {:ok, file} = File.read("./programming.json")
-    file
-    |> Poison.decode!
-    |> Map.get("data")
-    |> Map.get("children")
-    |> Enum.map(&format_reddit(&1))
-    |> IO.inspect
+    {code, response} = HTTPoison.get("https://www.reddit.com/r/programming.json")
+
+    case code do
+      :ok ->
+        File.write!("./programming.json", response.body)
+        {:ok, response.body}
+      :error -> File.read("./programming.json")
+    end
   end
 
   defp format_reddit(reddit) do
-    data = Map.get(reddit, "data")
     %{
-      title: Map.get(data, "title"),
-      permalink: "https://reddit.com#{Map.get(data, "permalink")}"
+      title: reddit["title"],
+      permalink: @root_url<>reddit["permalink"]
     }
   end
-
 end
