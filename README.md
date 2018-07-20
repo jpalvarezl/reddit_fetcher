@@ -7,6 +7,9 @@ mix escript._build
 # OR
 ./reddit_fetch --verbose #for console output
 ```
+
+Reddits are dumped into `programming.json` for offline mode. The file is added to the `.gitignore` list.
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
