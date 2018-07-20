@@ -2,7 +2,7 @@
 
 Command line tool to fetch reddits from r/programming
 ```bash
-mix escript._build
+mix escript.build
 ./reddit_fetcher
 # OR
 ./reddit_fetch --verbose #for console output
